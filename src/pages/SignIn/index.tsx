@@ -1,15 +1,14 @@
-import React, {useRef, useCallback} from 'react';
+import React, {useRef, useCallback, useState} from 'react';
 import {
   View,
-  Alert,
   TextInput,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
 } from 'react-native';
-import {Container, ScreenHeader, SafeArea} from './styles';
+import {Container, ScreenHeader} from './styles';
 import {PrimaryText, SecondaryText} from '../../styles';
-import {Button, Input} from '../../components';
+import {Button, Input, Modal} from '../../components';
 import * as Yup from 'yup';
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
@@ -24,6 +23,7 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   const {signIn} = useAuth();
 
@@ -47,21 +47,16 @@ const SignIn: React.FC = () => {
           email: data.email,
           password: data.password,
         });
-        console.log('data', data);
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
-
+          setShowAlert(true);
           return;
         }
-
-        Alert.alert(
-          'Erro na autenticação',
-          'Ocorreu um erro ao fazer login, cheque as credenciais.',
-        );
       }
+      setShowAlert(true);
     },
     [signIn],
   );
@@ -127,19 +122,17 @@ const SignIn: React.FC = () => {
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Modal
+        show={showAlert}
+        title="Erro"
+        message="Parece que Houve um erro ao tentar entrar na plataforma, verifique as credenciais!"
+        onConfirmPressed={() => {
+          setShowAlert(false);
+        }}
+      />
     </>
   );
-
-  // return (
-  //   <>
-  //     <Container>
-
-  //       <SafeArea>
-
-  //       </SafeArea>
-  //     </Container>
-  //   </>
-  // );
 };
 
 export default SignIn;

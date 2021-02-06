@@ -6,16 +6,18 @@ import React, {
   forwardRef,
   useCallback,
 } from 'react';
-import {TextInputProps} from 'react-native';
+// import {TextInputProps} from 'react-native';
+import {TextInputProps} from 'react-native-masked-text';
 import {useField} from '@unform/core';
-import {Container, TextInput} from './styles';
-import {SecondaryText} from '../../styles';
+import {Container, TextInput, ErrorBox} from './styles';
+import {PrimaryText, SecondaryText} from '../../styles';
 
 interface InputProps extends TextInputProps {
   name: string;
   icon?: string;
   label?: string;
-  mask?: string;
+  type?: string;
+  placeholder?: string;
 }
 
 interface InputValueReference {
@@ -27,30 +29,23 @@ interface InputRef {
 }
 
 const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
-  {name, label, mask, ...rest},
+  {name, label, ...rest},
   ref,
 ) => {
-  const inputElementRef = useRef<any>(null);
-  const {registerField, defaultValue = '', fieldName, error} = useField(name);
+  const {fieldName, defaultValue = '', registerField, error} = useField(name);
   const inputValueRef = useRef<InputValueReference>({value: defaultValue});
-
+  const inputElementRef = useRef<any>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
   }, []);
+
   const handleInputBlur = useCallback(() => {
     setIsFocused(false);
-
     setIsFilled(!!inputValueRef.current.value);
   }, []);
-
-  useImperativeHandle(ref, () => ({
-    focus() {
-      inputElementRef.current.focus();
-    },
-  }));
 
   useEffect(() => {
     registerField({
@@ -68,15 +63,24 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
     });
   }, [fieldName, registerField]);
 
+  useImperativeHandle(ref, () => {
+    return {
+      focus() {
+        inputElementRef.current.focus();
+      },
+    };
+  });
   return (
     <>
       {label ? (
-        <SecondaryText textColor={'#000'} alignSelf={'flex-start'} light>
+        <SecondaryText textColor={'#000'} alignSelf={'flex-start'}>
           {label}
         </SecondaryText>
       ) : null}
       <Container isFocused={isFocused} isErrored={!!error}>
         <TextInput
+          {...rest}
+          ref={inputElementRef}
           keyboardAppearance="light"
           placeholderTextColor="#000"
           defaultValue={defaultValue}
@@ -85,10 +89,18 @@ const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = (
           onChangeText={(value: any) => {
             inputValueRef.current.value = value;
           }}
-          mask={mask}
-          {...rest}
         />
       </Container>
+      {error && (
+        <ErrorBox>
+          <PrimaryText
+            textColor={'#c53030'}
+            alignSelf={'flex-end'}
+            fontSize={15}>
+            {error}
+          </PrimaryText>
+        </ErrorBox>
+      )}
     </>
   );
 };

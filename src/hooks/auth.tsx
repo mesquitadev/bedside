@@ -65,8 +65,6 @@ const AuthProvider: React.FC = ({children}) => {
 
     const {token, user} = response.data;
 
-    console.log('login', response.data);
-
     await AsyncStorage.multiSet([
       ['@Bedside:token', token],
       ['@Bedside:user', JSON.stringify(user)],

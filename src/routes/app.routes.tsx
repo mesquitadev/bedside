@@ -20,10 +20,6 @@ const AppRoutes: React.FC = () => (
         height: 40,
       },
       headerBackImage: () => <FeatherIcon name="chevron-left" size={24} />,
-      headerRight: () => <FeatherIcon name="log-out" size={24} />,
-      headerRightContainerStyle: {
-        marginRight: 15,
-      },
     }}>
     <Auth.Screen
       name="SuccessAfterSignUp"

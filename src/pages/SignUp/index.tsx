@@ -4,22 +4,27 @@ import {
   ScrollView,
   Platform,
   View,
-  Alert,
+  TextInput,
 } from 'react-native';
+import moment from 'moment';
+
 import {PrimaryText, SecondaryText} from '../../styles';
-import {Button, Input, Modal} from '../../components';
+import {Button, Input, Modal, InputMask} from '../../components';
 import {Form} from '@unform/mobile';
 import * as Yup from 'yup';
 import {FormHandles} from '@unform/core';
 import getValidationErrors from '../../utils/getValidationErrors';
 import api from '../../services/api';
-import AwesomeAlert from 'react-native-awesome-alerts';
+
 import {useNavigation} from '@react-navigation/native';
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-  const [showAlert, setShowAlert] = useState(false);
-  const [hideAlert, setHideAlert] = useState(false);
   const navigation = useNavigation();
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorTitle, setErrorTitle] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isBack, setIsBack] = useState(false);
 
   const nameInputRef = useRef<TextInput>(null);
   const cpfInputRef = useRef<TextInput>(null);
@@ -29,7 +34,7 @@ const SignUp: React.FC = () => {
 
   interface FormData {
     name: string;
-    cpf: number;
+    cpf: string;
     birthday: string;
     email: string;
     password: string;
@@ -43,20 +48,43 @@ const SignUp: React.FC = () => {
         email: Yup.string()
           .required('E-mail obrigatório')
           .email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
+        password: Yup.string()
+          .required('Senha obrigatória')
+          .min(6)
+          .typeError('A senha precisa ter no minimo 6 caracteres'),
+        name: Yup.string().required('Nome Obrigatório'),
+        cpf: Yup.string().required('CPF Obrigatório'),
+        birthday: Yup.string().required('Data de nascimento obrigatória'),
       });
 
       await schema.validate(data, {
         abortEarly: false,
       });
 
-      await api.post('users', {
-        name: data.name,
-        cpf: data.cpf,
-        birthday: data.birthday,
-        email: data.email,
-        password: data.password,
-      });
+      const response = await api
+        .post('users', {
+          name: data.name,
+          cpf: data.cpf.replace(/[^0-9]/g, ''),
+          birthday: moment(data.birthday, 'DD/MM/YYYY', true).format(
+            'YYYY-DD-MM',
+          ),
+          email: data.email,
+          password: data.password,
+        })
+        .then((res) => {
+          setShowAlert(true);
+          setErrorTitle('Sucesso!');
+          setErrorMessage('Você já pode fazer o login');
+          setIsBack(true);
+        })
+        .catch((error) => {
+          setShowAlert(true);
+          setErrorTitle('Erro!');
+          setErrorMessage(error.response.data.error);
+          setIsBack(true);
+        });
+
+      return response;
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -65,7 +93,6 @@ const SignUp: React.FC = () => {
 
         return;
       }
-      setShowAlert(true);
     }
   }, []);
   return (
@@ -96,30 +123,51 @@ const SignUp: React.FC = () => {
               placeholder="Nome"
               returnKeyType="next"
               onSubmitEditing={() => {
-                nameInputRef.current?.focus();
+                cpfInputRef.current?.focus();
               }}
             />
 
-            <Input
+            {/* <Input
+              ref={cpfInputRef}
               label="CPF"
               keyboardType="numeric"
               autoCorrect={false}
               name="cpf"
-              placeholder="CPF"
+              placeholder="000.000.000-00"
               mask={'[000].[000].[000]-[00]'}
               returnKeyType="next"
               onSubmitEditing={() => {
-                cpfInputRef.current?.focus();
+                birthdayInputRef.current?.focus();
               }}
+            /> */}
+
+            <InputMask
+              // ref={cpfInputRef}
+              label="CPF"
+              keyboardType="numeric"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="cpf"
+              type="cpf"
+              returnKeyType="next"
+              placeholder="000.000.000-00"
+              onSubmitEditing={() => birthdayInputRef.current?.focus()}
             />
-            <Input
+
+            <InputMask
+              // ref={birthdayInputRef}
               label="Data de Nascimento"
+              keyboardType="numeric"
               autoCorrect={false}
               autoCapitalize="none"
               name="birthday"
+              type="datetime"
+              options={{
+                format: 'MM/DD/YYYY',
+              }}
               placeholder="00/00/0000"
               returnKeyType="next"
-              onSubmitEditing={() => birthdayInputRef.current?.focus()}
+              onSubmitEditing={() => emailInputRef.current?.focus()}
             />
 
             <Input
@@ -132,18 +180,19 @@ const SignUp: React.FC = () => {
               placeholder="E-mail"
               returnKeyType="next"
               onSubmitEditing={() => {
-                emailInputRef.current?.focus();
+                passwordInputRef.current?.focus();
               }}
             />
 
             <Input
+              ref={passwordInputRef}
               label="Senha"
               secureTextEntry
               name="password"
               placeholder="Senha"
               textContentType="newPassword"
               returnKeyType="send"
-              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              onSubmitEditing={() => formRef.current?.submitForm()}
             />
 
             <Button
@@ -154,44 +203,13 @@ const SignUp: React.FC = () => {
           </Form>
         </ScrollView>
       </KeyboardAvoidingView>
-
-      <AwesomeAlert
+      <Modal
         show={showAlert}
-        actionContainerStyle={{
-          borderRadius: 10,
-        }}
-        closeOnTouchOutside={false}
-        showProgress={false}
-        title="Em Breve"
-        titleStyle={{
-          fontFamily: 'Poppins-Bold',
-        }}
-        message="As vacinas ainda estão chegando.
-        Assim que estivermos pronto te avisamos."
-        messageStyle={{
-          justifyContent: 'center',
-          textAlign: 'center',
-          fontSize: 15,
-          fontFamily: 'Poppins-Regular',
-          color: '#000',
-        }}
-        closeOnHardwareBackPress={false}
-        showConfirmButton={true}
-        confirmText="Ok"
-        confirmButtonStyle={{
-          width: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: 46,
-          backgroundColor: '#04C7AD',
-        }}
-        confirmButtonTextStyle={{
-          fontFamily: 'Poppins-Bold',
-          fontSize: 20,
-        }}
+        title={errorTitle}
+        message={errorMessage}
         onConfirmPressed={() => {
-          setHideAlert(false);
-          navigation.goBack();
+          setShowAlert(false);
+          isBack ? navigation.goBack() : null;
         }}
       />
     </>

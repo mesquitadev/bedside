@@ -12,7 +12,7 @@ import {Button, Input, Modal} from '../../components';
 import * as Yup from 'yup';
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
-
+import {useNavigation} from '@react-navigation/native';
 import getValidationErrors from '../../utils/getValidationErrors';
 import {useAuth} from '../../hooks/auth';
 
@@ -24,6 +24,10 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [errorTitle, setErrorTitle] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isBack, setIsBack] = useState(false);
+  const navigation = useNavigation();
 
   const {signIn} = useAuth();
 
@@ -46,17 +50,19 @@ const SignIn: React.FC = () => {
         await signIn({
           email: data.email,
           password: data.password,
+        }).catch((error) => {
+          setShowAlert(true);
+          setErrorTitle('Erro!');
+          setErrorMessage(error.response.data.error);
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
-          setShowAlert(true);
           return;
         }
       }
-      setShowAlert(true);
     },
     [signIn],
   );
@@ -94,7 +100,9 @@ const SignIn: React.FC = () => {
                   name="email"
                   placeholder="E-mail"
                   returnKeyType="next"
-                  onSubmitEditing={() => {}}
+                  onSubmitEditing={() => {
+                    passwordInputRef.current?.focus();
+                  }}
                 />
 
                 <Input
@@ -125,10 +133,11 @@ const SignIn: React.FC = () => {
 
       <Modal
         show={showAlert}
-        title="Erro"
-        message="Parece que Houve um erro ao tentar entrar na plataforma, verifique as credenciais!"
+        title={errorTitle}
+        message={errorMessage}
         onConfirmPressed={() => {
           setShowAlert(false);
+          isBack ? navigation.goBack() : null;
         }}
       />
     </>

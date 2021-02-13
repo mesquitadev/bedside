@@ -59,9 +59,6 @@ const SignUp: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-
-      console.log('nd', data.birthday);
-
       const response = await api
         .post('users', {
           name: data.name,

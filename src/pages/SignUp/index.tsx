@@ -60,13 +60,13 @@ const SignUp: React.FC = () => {
         abortEarly: false,
       });
 
+      console.log('nd', data.birthday);
+
       const response = await api
         .post('users', {
           name: data.name,
           cpf: data.cpf.replace(/[^0-9]/g, ''),
-          birthday: moment(data.birthday, 'DD/MM/YYYY', true).format(
-            'YYYY-DD-MM',
-          ),
+          birthday: moment(data.birthday, true).format('YYYY-MM-DD'),
           email: data.email,
           password: data.password,
         })
@@ -146,7 +146,7 @@ const SignUp: React.FC = () => {
               name="birthday"
               type="datetime"
               options={{
-                format: 'MM/DD/YYYY',
+                format: 'DD/MM/YYYY',
               }}
               placeholder="00/00/0000"
               returnKeyType="next"

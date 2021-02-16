@@ -16,13 +16,18 @@ const AuthRoutes: React.FC = () => (
       headerTitle: '',
       headerBackTitleVisible: false,
       headerStyle: {
-        backgroundColor: 'transparent',
+        backgroundColor: 'white',
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
-        height: 40,
+        height: 90,
       },
-      headerBackImage: () => <FeatherIcon name="chevron-left" size={24} />,
+      headerLeftContainerStyle: {
+        marginLeft: 15,
+      },
+      headerBackImage: () => (
+        <FeatherIcon name="chevron-left" size={24} color={'#000'} />
+      ),
     }}>
     <Auth.Screen name="Main" component={Main} />
     <Auth.Screen

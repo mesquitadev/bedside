@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Bedside</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">5JeQuR0IDGQXNRO7rLVGMlWFD0z9vq0EOZy14</string>
 </resources>

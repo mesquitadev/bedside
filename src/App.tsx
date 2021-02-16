@@ -4,16 +4,10 @@ import {View, StatusBar} from 'react-native';
 import {NetworkIndicator} from './components';
 import Routes from './routes';
 import {NavigationContainer} from '@react-navigation/native';
-import SplashScreen from 'react-native-splash-screen';
+import codePush from 'react-native-code-push';
 import AppProvider from './hooks';
 
 const App: React.FC = () => {
-  useEffect(() => {
-    // verificar se o usuário está logado
-
-    SplashScreen.hide();
-  }, []);
-
   return (
     <>
       <NetworkIndicator />
@@ -29,4 +23,6 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default codePush({
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+})(App);

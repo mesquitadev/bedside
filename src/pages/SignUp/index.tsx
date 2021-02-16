@@ -26,7 +26,6 @@ const SignUp: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isBack, setIsBack] = useState(false);
 
-  const nameInputRef = useRef<TextInput>(null);
   const cpfInputRef = useRef<TextInput>(null);
   const birthdayInputRef = useRef<TextInput>(null);
   const emailInputRef = useRef<TextInput>(null);
@@ -60,18 +59,15 @@ const SignUp: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-
       const response = await api
         .post('users', {
           name: data.name,
           cpf: data.cpf.replace(/[^0-9]/g, ''),
-          birthday: moment(data.birthday, 'DD/MM/YYYY', true).format(
-            'YYYY-DD-MM',
-          ),
+          birthday: moment(data.birthday, true).format('YYYY-MM-DD'),
           email: data.email,
           password: data.password,
         })
-        .then((res) => {
+        .then(() => {
           setShowAlert(true);
           setErrorTitle('Sucesso!');
           setErrorMessage('Você já pode fazer o login');
@@ -127,22 +123,7 @@ const SignUp: React.FC = () => {
               }}
             />
 
-            {/* <Input
-              ref={cpfInputRef}
-              label="CPF"
-              keyboardType="numeric"
-              autoCorrect={false}
-              name="cpf"
-              placeholder="000.000.000-00"
-              mask={'[000].[000].[000]-[00]'}
-              returnKeyType="next"
-              onSubmitEditing={() => {
-                birthdayInputRef.current?.focus();
-              }}
-            /> */}
-
             <InputMask
-              // ref={cpfInputRef}
               label="CPF"
               keyboardType="numeric"
               autoCorrect={false}
@@ -155,7 +136,6 @@ const SignUp: React.FC = () => {
             />
 
             <InputMask
-              // ref={birthdayInputRef}
               label="Data de Nascimento"
               keyboardType="numeric"
               autoCorrect={false}
@@ -163,7 +143,7 @@ const SignUp: React.FC = () => {
               name="birthday"
               type="datetime"
               options={{
-                format: 'MM/DD/YYYY',
+                format: 'DD/MM/YYYY',
               }}
               placeholder="00/00/0000"
               returnKeyType="next"

@@ -1,5 +1,10 @@
 import styled from 'styled-components/native';
 
+export const MainContainer = styled.View`
+  flex: 1;
+  background: #e8237d;
+`;
+
 interface PrimaryText {
   textColor?: string;
   fontSize?: number;

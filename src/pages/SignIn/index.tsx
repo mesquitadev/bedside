@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {Container, ScreenHeader} from './styles';
 import {PrimaryText, SecondaryText} from '../../styles';
-import {Button, Input, Modal} from '../../components';
+import {Button, Input, Alert} from '../../components';
 import * as Yup from 'yup';
 import {Form} from '@unform/mobile';
 import {FormHandles} from '@unform/core';
@@ -131,7 +131,7 @@ const SignIn: React.FC = () => {
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <Modal
+      <Alert
         show={showAlert}
         title={errorTitle}
         message={errorMessage}

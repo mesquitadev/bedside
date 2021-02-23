@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 
 import {PrimaryText, SecondaryText} from '../../styles';
-import {Button, Input, Modal, InputMask} from '../../components';
+import {Button, Input, Alert, InputMask} from '../../components';
 import {Form} from '@unform/mobile';
 import * as Yup from 'yup';
 import {FormHandles} from '@unform/core';
@@ -183,7 +183,7 @@ const SignUp: React.FC = () => {
           </Form>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Modal
+      <Alert
         show={showAlert}
         title={errorTitle}
         message={errorMessage}

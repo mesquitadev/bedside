@@ -25,7 +25,7 @@ const AppRoutes: React.FC = () => (
       name="SuccessAfterSignUp"
       component={SuccessAfterSignUp}
       options={{
-        headerShown: true,
+        headerShown: false,
       }}
     />
   </Auth.Navigator>

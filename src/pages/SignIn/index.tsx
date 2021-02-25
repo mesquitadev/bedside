@@ -101,7 +101,7 @@ const SignIn: React.FC = () => {
                   placeholder="E-mail"
                   returnKeyType="next"
                   onSubmitEditing={() => {
-                    birthdayInputRef.current?.focus();
+                    passwordInputRef.current?.focus();
                   }}
                 />
 

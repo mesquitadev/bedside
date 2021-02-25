@@ -7,10 +7,15 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-
+import {getBottomSpace} from 'react-native-iphone-x-helper';
 const {height} = Dimensions.get('window');
+interface ModalProps {
+  show?: boolean;
+  close?: boolean;
+}
+import {ModalContainer} from './styles';
 
-const Modal = ({show, close}) => {
+const Modal = ({show, close}: ModalProps) => {
   const [state, setState] = useState({
     opacity: new Animated.Value(0),
     container: new Animated.Value(height),
@@ -19,8 +24,16 @@ const Modal = ({show, close}) => {
 
   const openModal = () => {
     Animated.sequence([
-      Animated.timing(state.container, {toValue: 0, duration: 100}),
-      Animated.timing(state.opacity, {toValue: 1, duration: 300}),
+      Animated.timing(state.container, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(state.opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
       Animated.spring(state.modal, {
         toValue: 0,
         bounciness: 5,
@@ -36,8 +49,16 @@ const Modal = ({show, close}) => {
         duration: 250,
         useNativeDriver: true,
       }),
-      Animated.timing(state.opacity, {toValue: 0, duration: 300}),
-      Animated.timing(state.container, {toValue: height, duration: 100}),
+      Animated.timing(state.opacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(state.container, {
+        toValue: height,
+        duration: 100,
+        useNativeDriver: true,
+      }),
     ]).start();
   };
 
@@ -93,13 +114,14 @@ const Modal = ({show, close}) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     width: '100%',
     height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     position: 'absolute',
   },
   modal: {
-    bottom: 0,
+    bottom: 16 + getBottomSpace(),
     position: 'absolute',
     height: '50%',
     backgroundColor: '#fff',

@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {Image, TouchableOpacity, Text} from 'react-native';
 import {PrimaryText} from '../../styles';
 import Icon from 'react-native-vector-icons/Feather';
 import {
@@ -11,11 +11,21 @@ import {
   LogoutButtonText,
   List,
 } from './styles';
+import {Modal} from '../../components';
 import avatar from '../../assets/profile_pic.png';
 import logoBed from '../../assets/logo-bed.png';
 import {useAuth} from '../../hooks/auth';
+import {Modalize} from 'react-native-modalize';
+import DropDownPicker from 'react-native-dropdown-picker';
 const SuccessAfterSignUp: React.FC = () => {
   const {user, signOut} = useAuth();
+  const [modal, setModal] = useState(false);
+
+  const modalRef = useRef(null);
+
+  const onOpen = () => {
+    modalRef.current?.open();
+  };
   return (
     <>
       <Container>
@@ -32,6 +42,12 @@ const SuccessAfterSignUp: React.FC = () => {
         </Header>
 
         <Box>
+          <TouchableOpacity onPress={() => onOpen()}>
+            <Text>Open Modal</Text>
+          </TouchableOpacity>
+        </Box>
+
+        {/* <Box>
           <PrimaryText textColor={'#000'}>
             A{' '}
             <PrimaryText
@@ -103,13 +119,45 @@ const SuccessAfterSignUp: React.FC = () => {
             </PrimaryText>{' '}
             em seu celular e em seu email.
           </PrimaryText>
-        </Box>
+        </Box> */}
 
-        <LogoutButton onPress={() => signOut()}>
+        {/* <LogoutButton onPress={() => signOut()}>
           <Icon name="log-out" size={20} color="white" />
           <LogoutButtonText>Sair</LogoutButtonText>
-        </LogoutButton>
+        </LogoutButton> */}
       </Container>
+      <Modalize ref={modalRef} snapPoint={500}>
+        <Text
+          style={{
+            flex: 1,
+            height: '100%',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10,
+          }}>
+          <DropDownPicker
+            items={[
+              {
+                label: 'UK',
+                value: 'uk',
+                icon: () => <Icon name="flag" size={18} color="#900" />,
+              },
+              {
+                label: 'France',
+                value: 'france',
+                icon: () => <Icon name="flag" size={18} color="#900" />,
+              },
+            ]}
+            containerStyle={{height: 40, width: 200}}
+            style={{backgroundColor: '#fafafa'}}
+            itemStyle={{
+              justifyContent: 'flex-start',
+            }}
+            dropDownStyle={{backgroundColor: '#fafafa'}}
+          />
+        </Text>
+      </Modalize>
     </>
   );
 };

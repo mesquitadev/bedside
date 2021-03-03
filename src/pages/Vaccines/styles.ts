@@ -5,10 +5,8 @@ export const Container = styled.View`
   background: white;
 `;
 
-export const ModalContainer = styled.View`
+export const ModalContainer = styled.ScrollView`
   flex: 1;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
 `;
 
 export const PageHeader = styled.View`
@@ -55,15 +53,15 @@ export const FooterCard = styled.View`
   border-bottom-right-radius: 10px;
 `;
 export const ModalHeader = styled.View`
-  flex-direction: row;
+  flex-direction: column;
   padding: 10px 10px;
   align-items: center;
+  justify-content: center;
 `;
 export const Avatar = styled.Image`
   width: 80px;
   height: 80px;
   border-radius: 40px;
-  margin-left: 30px;
 `;
 export const FormContainer = styled.View`
   flex: 1;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 const homol = 'http://104.236.26.23/';
-const prod = 'https://subform.bedside.com.br/';
+const prod = 'https://sandbox.bedside.com.br/api/v1/';
 const api = axios.create({
   baseURL: prod,
 });

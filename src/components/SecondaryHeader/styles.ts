@@ -5,17 +5,12 @@ export const Container = styled.View`
   align-items: center;
   justify-content: space-between;
   height: 90px;
-  margin: 0 30px;
-  max-width: 100%;
+  margin-left: 20px;
+  margin-right: 20px;
 `;
 
 export const Logo = styled.Image.attrs({
   resizeMode: 'contain',
 })`
-  height: 25px;
-`;
-export const AddressContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  max-width: 150px;
+  height: 20px;
 `;

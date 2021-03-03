@@ -5,3 +5,7 @@ export {default as Modal} from './Modal';
 export {default as Alert} from './Alert';
 export {default as InputMask} from './InputMask';
 export {default as NetworkIndicator} from './NetworkIndicator';
+export {default as Header} from './Header';
+export {default as SecondaryHeader} from './SecondaryHeader';
+export {default as Option} from './Option';
+export {default as Loading} from './Loading';

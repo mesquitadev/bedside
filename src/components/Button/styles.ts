@@ -5,7 +5,7 @@ interface ButtonProps {
   backgroundColor?: string;
 }
 
-export const Container = styled(RectButton)`
+export const Container = styled.TouchableOpacity`
   width: 100%;
   height: 60px;
   background-color: ${(props: ButtonProps) =>

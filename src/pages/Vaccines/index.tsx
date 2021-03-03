@@ -23,7 +23,7 @@ import api from './../../services/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MultiSelect from 'react-native-multiple-select';
 import {setSeconds, setHours, setMinutes, parseISO} from 'date-fns';
-import {utcToZonedTime} from 'date-fns-tz';
+import {utcToZonedTime, zonedTimeToUtc} from 'date-fns-tz';
 import {defaultFormatUtc} from 'moment-timezone';
 interface RouteParams {
   labId: string;
@@ -105,6 +105,7 @@ const Vaccines: React.FC = () => {
     setSelectedVaccine(vaccine);
     onOpen();
   }, []);
+
   const handleShowCalendar = useCallback(() => {
     setShowCalendar((state) => !state);
   }, []);
@@ -167,28 +168,18 @@ const Vaccines: React.FC = () => {
   };
 
   const handleSave = useCallback(async () => {
-    // moment(appointmentDate).tz('America/Sao_Paulo').format('HH:mm');
-    console.log('appdate', appointmentDate);
-    let dateStr = appointmentDate,
-      timeStr = appointmentTime,
-      date = moment(dateStr).utc(),
-      time = moment(timeStr, 'HH:MM').utc();
+    console.log('appdate', selectedAppointmentTime);
+    console.log('appointmentDate', appointmentDate);
+    const [hour, minute] = selectedAppointmentTime.split(':');
+    const value = setSeconds(setMinutes(setHours(appointmentDate, Number(hour)), Number(minute)),0);
+    const znTime = zonedTimeToUtc(value, 'utc');
+    console.log('zntdate', znTime )
 
-    date.set({
-      hour: time.get('hour'),
-      minute: time.get('minute'),
-      second: time.get('second'),
-    });
-
-    console.log(
-      'min',
-      moment(appointmentDate).tz('America/Sao_Paulo').format('HH:mm'),
-    );
     const data = {
       vaccine_id: selectedVaccine.id,
       lab_id: selectedLab,
       quantity: quantity,
-      date: appointmentDate,
+      date: znTime,
       delivery: false,
       unity: {
         name: selectedLocale,

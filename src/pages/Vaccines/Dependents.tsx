@@ -60,7 +60,6 @@ export const AppointmentVaccines: React.FC = () => {
           </IconButton>
         </Header>
         <List
-          numColumns={2}
           data={dependents}
           keyExtractor={(dep) => dep.id}
           // ListHeaderComponent={}

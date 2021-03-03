@@ -24,6 +24,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import MultiSelect from 'react-native-multiple-select';
 import {setSeconds, setHours, setMinutes} from 'date-fns';
 import {zonedTimeToUtc} from 'date-fns-tz';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 interface RouteParams {
   labId: string;
   selectedVaccine: Array;
@@ -79,7 +80,7 @@ export const AppointmentVaccines: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [appointmentTime, setAppointmentTime] = useState([]);
   const [selectedAppointmentTime, setSelectedAppointmentTime] = useState('');
-  const [selectedDate, setSelectedDate] = useState<number>();
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [showCalendar, setShowCalendar] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
@@ -90,6 +91,7 @@ export const AppointmentVaccines: React.FC = () => {
   const [dependents, setDependents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDependents, setSelectedDependents] = useState([]);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   useEffect(() => {
     api
       .get(
@@ -117,9 +119,6 @@ export const AppointmentVaccines: React.FC = () => {
           })),
         );
         setLoading(false);
-        if (scheduled) {
-          setDisabled(false);
-        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -139,21 +138,6 @@ export const AppointmentVaccines: React.FC = () => {
       })
       .catch((err) => console.log(err.message));
   }, [selectedDate]);
-
-  const handleShowCalendar = useCallback(() => {
-    setShowCalendar((state) => !state);
-  }, []);
-
-  const handleDateChanged = (event, date) => {
-    if (Platform.OS === 'android') {
-      setShowCalendar(false);
-    }
-    if (date) {
-      console.log('date', date);
-      setSelectedDate(date);
-      console.log('sDate', selectedDate);
-    }
-  };
 
   const handleChangeQuantity = (quantity) => {
     if (quantity > 1) {
@@ -204,6 +188,20 @@ export const AppointmentVaccines: React.FC = () => {
 
     return response;
   }, []);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    setSelectedDate(date);
+    hideDatePicker();
+  };
+
   return loading ? (
     <Loading />
   ) : (
@@ -227,7 +225,7 @@ export const AppointmentVaccines: React.FC = () => {
         </ModalHeader>
         <FormContainer>
           <Button
-            onPress={handleShowCalendar}
+            onPress={showDatePicker}
             style={{borderColor: 'black', borderWidth: 1, height: 40}}
             backgroundColor="transparent"
             disabled>
@@ -235,21 +233,6 @@ export const AppointmentVaccines: React.FC = () => {
               ? moment(selectedDate, true).format('DD/MM/YYYY')
               : 'Selecionar uma data'}
           </Button>
-          {showCalendar && (
-            <DateTimePicker
-              {...(Platform.OS === 'ios' && {textColor: '#000'})}
-              display="calendar"
-              is24Hour
-              dateFormat="day month year"
-              onChange={(event, date) => {
-                setSelectedDate(date);
-                console.log('sDate', selectedDate);
-              }}
-              display={Platform.OS === 'android' ? 'calendar' : 'spinner'}
-              value={selectedDate ? selectedDate : new Date()}
-              minimumDate={new Date()}
-            />
-          )}
 
           <Option
             label="Quantidade"
@@ -262,24 +245,8 @@ export const AppointmentVaccines: React.FC = () => {
             onChangeItem={(item) => handleChangeQuantity(item.value)}
             zIndex={6000}
           />
-          {dependents
-            ? null
-            : quantity > 1 && (
-                <Button
-                  onPress={() => navigation.navigate('Dependents')}
-                  style={{
-                    borderColor: 'black',
-                    borderWidth: 1,
-                    height: 40,
-                    marginTop: 10,
-                  }}
-                  backgroundColor="transparent"
-                  disabled>
-                  Adicionar Dependentes
-                </Button>
-              )}
 
-          {dependents && (
+          {quantity > 1 && (
             <Option
               label="Dependentes"
               disabled={disabled}
@@ -295,6 +262,20 @@ export const AppointmentVaccines: React.FC = () => {
               onChangeItem={(item) => setSelectedDependents(item.value)}
               zIndex={5000}
             />
+          )}
+          {quantity > 1 && (
+            <Button
+              onPress={() => navigation.navigate('Dependents')}
+              style={{
+                borderColor: 'black',
+                borderWidth: 1,
+                height: 40,
+                marginTop: 10,
+              }}
+              backgroundColor="transparent"
+              disabled>
+              Adicionar Dependentes
+            </Button>
           )}
 
           <Option
@@ -335,6 +316,13 @@ export const AppointmentVaccines: React.FC = () => {
           setShowAlert(false);
           isBack ? navigation.goBack() : null;
         }}
+      />
+      <DateTimePickerModal
+        onDateChange={}
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
       />
     </>
   );

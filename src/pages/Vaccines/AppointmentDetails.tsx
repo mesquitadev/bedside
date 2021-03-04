@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect, useCallback} from 'react';
+import React, {useRef, useState, useEffect, useCallback, useMemo} from 'react';
 import {View, Platform, TouchableOpacity} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {PrimaryText, SecondaryText} from '../../styles';
@@ -22,8 +22,8 @@ import logoPref from '../../assets/avatar.png';
 import api from './../../services/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MultiSelect from 'react-native-multiple-select';
-import {setSeconds, setHours, setMinutes} from 'date-fns';
-import {zonedTimeToUtc} from 'date-fns-tz';
+import {setSeconds, setHours, setMinutes, parseISO} from 'date-fns';
+import {zonedTimeToUtc, utcToZonedTime} from 'date-fns-tz';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 interface RouteParams {
   labId: string;
@@ -80,8 +80,6 @@ export const AppointmentVaccines: React.FC = () => {
   const [address, setAddress] = useState<string>('');
   const [appointmentTime, setAppointmentTime] = useState([]);
   const [selectedAppointmentTime, setSelectedAppointmentTime] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [showCalendar, setShowCalendar] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -89,26 +87,52 @@ export const AppointmentVaccines: React.FC = () => {
   const [scheduled, setScheduled] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [dependents, setDependents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedDependents, setSelectedDependents] = useState([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [finalDate, setFinalDate] = useState<Date>('');
+  const minimumDate = useMemo(() => {
+    const today = new Date();
+
+    if (today.getHours() >= 17) {
+      return new Date(today.setDate(today.getDate() + 1));
+    }
+
+    return today;
+  }, []);
+  const [selectedDate, setSelectedDate] = useState(minimumDate);
+
+  const handleConfirm = (date: Date) => {
+    console.log('teste', date);
+    setSelectedDate(date);
+    console.log('slD', selectedDate);
+    hideDatePicker();
+  };
+
+  const handleTime = (item) => {
+    setSelectedAppointmentTime(item.value);
+    console.log('htv', item.value);
+  };
+
   useEffect(() => {
+    setSelectedDate(selectedDate);
+    setSelectedAppointmentTime(selectedAppointmentTime);
     api
-      .get(
-        `/app/vaccines/available/${selectedVaccine.id}?date=${moment(
-          selectedDate,
-        ).format('YYYY-MM-DD')}`,
-      )
-      .then((res) => {
+      .get(`/app/vaccines/available/${selectedVaccine.id}`, {
+        params: {
+          date: moment(selectedDate).format('YYYY-MM-DD'),
+        },
+      })
+      .then((response) => {
         setLocale(
-          res.data.availableUnity.map((locale) => ({
+          response.data.availableUnity.map((locale) => ({
             label: locale.name,
             value: locale.name,
             address: locale.adress,
           })),
         );
 
-        res.data.availableUnity.map((unity) =>
+        response.data.availableUnity.map((unity) =>
           setScheduled(unity.availableSchedule),
         );
 
@@ -118,29 +142,38 @@ export const AppointmentVaccines: React.FC = () => {
             value: unity.time,
           })),
         );
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.message);
-        setDisabled(true);
-      });
-    setDisabled(false);
 
-    api
-      .get('/ousers')
-      .then((res) => {
-        setDependents(
-          res.data.ousers.map((dep) => ({
-            label: dep.name,
-            value: dep.id,
-          })),
-        );
-      })
-      .catch((err) => console.log(err.message));
-  }, [selectedDate]);
+        api
+          .get('/ousers')
+          .then((res) => {
+            setDependents(
+              res.data.ousers.map((dep) => ({
+                label: dep.name,
+                value: dep.id,
+              })),
+            );
+          })
+          .catch((err) => console.log(err.message));
+        setDisabled(false);
+      });
+
+    console.log('appdate', selectedAppointmentTime);
+    console.log('appointmentDate', selectedDate);
+    const [hour, minute] = selectedAppointmentTime.split(':');
+    console.log('checkTZ', selectedDate);
+    const value = setSeconds(
+      setMinutes(setHours(selectedDate, Number(hour)), Number(minute)),
+      0,
+    );
+    const formatedDate = new Date(
+      value.valueOf() - value.getTimezoneOffset() * 60000,
+    );
+    setFinalDate(formatedDate);
+    console.log('value', finalDate);
+  }, [selectedDate, selectedAppointmentTime, navigation]);
 
   const handleChangeQuantity = (quantity) => {
-    if (quantity > 1) {
+    if (quantity > 1 && dependents.length) {
       setShowAlert(true);
       setErrorTitle('Erro!');
       setErrorMessage('Você Precisa adicionar os Dependentes');
@@ -149,29 +182,21 @@ export const AppointmentVaccines: React.FC = () => {
     setQuantity(quantity);
   };
 
-  const handleSave = useCallback(async () => {
-    console.log('appdate', selectedAppointmentTime);
-    console.log('appointmentDate', selectedDate);
-    const [hour, minute] = selectedAppointmentTime.split(':');
-    const value = setSeconds(
-      setMinutes(setHours(selectedDate, Number(hour)), Number(minute)),
-      0,
-    );
-    const znTime = zonedTimeToUtc(value, 'utc');
-    console.log('zntdate', znTime);
-    console.log('deps', znTime);
+  const handleSave = useCallback(() => {
+    console.log('dep', selectedDependents);
     const data = {
       vaccine_id: selectedVaccine.id,
       lab_id: labId,
       quantity: quantity,
-      date: znTime,
+      date: finalDate,
       delivery: false,
       unity: {
         name: selectedLocale,
         adress: address,
       },
+      // ouser1_id:
     };
-    const response = await api
+    const response = api
       .post('app/vaccines/appointments', data)
       .then(() => {
         setShowAlert(true);
@@ -195,11 +220,6 @@ export const AppointmentVaccines: React.FC = () => {
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date: Date) => {
-    setSelectedDate(date);
-    hideDatePicker();
   };
 
   return loading ? (
@@ -236,7 +256,7 @@ export const AppointmentVaccines: React.FC = () => {
 
           <Option
             label="Quantidade"
-            disabled={disabled}
+            // disabled={disabled}
             placeholder={
               disabled ? 'Carregando...' : 'Selecione uma quantidade'
             }
@@ -259,7 +279,9 @@ export const AppointmentVaccines: React.FC = () => {
               }
               items={dependents}
               defaultValue={quantity}
-              onChangeItem={(item) => setSelectedDependents(item.value)}
+              onChangeItem={(item) => {
+                setSelectedDependents(item.value);
+              }}
               zIndex={5000}
             />
           )}
@@ -296,7 +318,7 @@ export const AppointmentVaccines: React.FC = () => {
             placeholder={disabled ? 'Carregando...' : 'Selecione um Horário'}
             items={appointmentTime}
             defaultValue={selectedAppointmentTime}
-            onChangeItem={(item) => setSelectedAppointmentTime(item.value)}
+            onChangeItem={handleTime}
             zIndex={2000}
           />
           <Button
@@ -318,7 +340,6 @@ export const AppointmentVaccines: React.FC = () => {
         }}
       />
       <DateTimePickerModal
-        onDateChange={}
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}

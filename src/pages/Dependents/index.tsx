@@ -4,9 +4,15 @@ import {useRoute, useNavigation} from '@react-navigation/native';
 import {PrimaryText, SecondaryText} from '../../styles';
 import {Option, Button, Input, Alert, Loading} from '../../components/';
 import styled from 'styled-components/native';
-import {Container} from './styles';
+// import {Container} from './styles';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
+
+export const Container = styled.View`
+  flex: 1;
+  background: white;
+`;
+
 export const Header = styled.View`
   height: 80px;
   padding: 20px 20px;
@@ -33,7 +39,7 @@ export const IconButton = styled.TouchableOpacity`
   border-radius: 50px;
 `;
 
-export const AppointmentVaccines: React.FC = () => {
+export const Dependents: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const route = useRoute();
@@ -42,9 +48,8 @@ export const AppointmentVaccines: React.FC = () => {
   useEffect(() => {
     api.get('/ousers').then((res) => {
       setDependents(res.data.ousers);
-      console.log('ou', res.data.ousers);
     });
-  }, []);
+  }, [navigation]);
 
   return loading ? (
     <Loading />
@@ -55,7 +60,7 @@ export const AppointmentVaccines: React.FC = () => {
           <PrimaryText textColor="#40CCB2" alignSelf="flex-start" fontSize={30}>
             Dependentes
           </PrimaryText>
-          <IconButton>
+          <IconButton onPress={() => navigation.navigate('AddDependent')}>
             <Icon name="plus" size={30} color="#ffff" />
           </IconButton>
         </Header>
@@ -76,4 +81,4 @@ export const AppointmentVaccines: React.FC = () => {
   );
 };
 
-export default AppointmentVaccines;
+export default Dependents;

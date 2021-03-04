@@ -10,7 +10,8 @@ import Appointments from '../pages/Appointments';
 import Home from '../pages/Home';
 import Icon from 'react-native-vector-icons/Feather';
 import {AppointmentVaccines} from '../pages/Vaccines/AppointmentDetails';
-import Dependents from '../pages/Vaccines/Dependents';
+import Dependents from '../pages/Dependents';
+import AddDependents from '../pages/Dependents/AddDependent';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -67,6 +68,28 @@ const HomeRoutes: React.FC = () => (
     <Stack.Screen
       name="Dependents"
       component={Dependents}
+      options={{
+        headerTitle: () => <Logo source={bedLogo} />,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: 'white',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+          height: 90,
+        },
+        headerLeftContainerStyle: {
+          marginLeft: 15,
+        },
+        headerBackImage: () => (
+          <Icon name="chevron-left" size={24} color={'#000'} />
+        ),
+      }}
+    />
+
+    <Stack.Screen
+      name="AddDependent"
+      component={AddDependents}
       options={{
         headerTitle: () => <Logo source={bedLogo} />,
         headerBackTitleVisible: false,

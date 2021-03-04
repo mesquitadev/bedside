@@ -91,6 +91,11 @@ export const AppointmentVaccines: React.FC = () => {
   const [selectedDependents, setSelectedDependents] = useState([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [finalDate, setFinalDate] = useState<Date>('');
+  const [ouser1, setOuser1] = useState('');
+  const [ouser2, setOuser2] = useState('');
+  const [ouser3, setOuser3] = useState('');
+  const [ouser4, setOuser4] = useState('');
+  const [ouser5, setOuser5] = useState('');
   const minimumDate = useMemo(() => {
     const today = new Date();
 
@@ -114,9 +119,15 @@ export const AppointmentVaccines: React.FC = () => {
     console.log('htv', item.value);
   };
 
+  const handleDependents = (item) => {
+    console.log('dss', item);
+    setSelectedDependents(item);
+  };
+
   useEffect(() => {
     setSelectedDate(selectedDate);
     setSelectedAppointmentTime(selectedAppointmentTime);
+    setSelectedDependents(selectedDependents);
     api
       .get(`/app/vaccines/available/${selectedVaccine.id}`, {
         params: {
@@ -157,10 +168,7 @@ export const AppointmentVaccines: React.FC = () => {
         setDisabled(false);
       });
 
-    console.log('appdate', selectedAppointmentTime);
-    console.log('appointmentDate', selectedDate);
     const [hour, minute] = selectedAppointmentTime.split(':');
-    console.log('checkTZ', selectedDate);
     const value = setSeconds(
       setMinutes(setHours(selectedDate, Number(hour)), Number(minute)),
       0,
@@ -169,8 +177,14 @@ export const AppointmentVaccines: React.FC = () => {
       value.valueOf() - value.getTimezoneOffset() * 60000,
     );
     setFinalDate(formatedDate);
-    console.log('value', finalDate);
-  }, [selectedDate, selectedAppointmentTime, navigation]);
+    console.log('fnDt', finalDate);
+
+    setOuser1(selectedDependents[0]);
+    setOuser2(selectedDependents[1]);
+    setOuser3(selectedDependents[2]);
+    setOuser4(selectedDependents[3]);
+    setOuser5(selectedDependents[4]);
+  }, [selectedDate, selectedAppointmentTime, navigation, selectedDependents]);
 
   const handleChangeQuantity = (quantity) => {
     if (quantity > 1 && dependents.length) {
@@ -184,6 +198,10 @@ export const AppointmentVaccines: React.FC = () => {
 
   const handleSave = useCallback(() => {
     console.log('dep', selectedDependents);
+    // for (let i; i <= 4; i++) {
+    //   const ouser = selectedDependents[i];
+    //   console.log('ou', ouser);
+    // }
     const data = {
       vaccine_id: selectedVaccine.id,
       lab_id: labId,
@@ -194,8 +212,13 @@ export const AppointmentVaccines: React.FC = () => {
         name: selectedLocale,
         adress: address,
       },
-      // ouser1_id:
+      ouser1_id: ouser1,
+      ouser2_id: ouser2,
+      ouser3_id: ouser3,
+      ouser4_id: ouser4,
+      ouser5_id: ouser5,
     };
+    console.log('data', data);
     const response = api
       .post('app/vaccines/appointments', data)
       .then(() => {
@@ -279,9 +302,7 @@ export const AppointmentVaccines: React.FC = () => {
               }
               items={dependents}
               defaultValue={quantity}
-              onChangeItem={(item) => {
-                setSelectedDependents(item.value);
-              }}
+              onChangeItem={handleDependents}
               zIndex={5000}
             />
           )}

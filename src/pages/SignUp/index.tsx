@@ -40,6 +40,7 @@ const SignUp: React.FC = () => {
   }
 
   const handleSave = useCallback(async (data: FormData) => {
+    console.log('data', data);
     try {
       formRef.current?.setErrors({});
 
@@ -163,15 +164,27 @@ const SignUp: React.FC = () => {
                 passwordInputRef.current?.focus();
               }}
             />
+
+            <Input
+              ref={passwordInputRef}
+              label="Senha"
+              secureTextEntry
+              name="password"
+              placeholder="Senha"
+              textContentType="newPassword"
+              returnKeyType="send"
+              onSubmitEditing={() => formRef.current?.submitForm()}
+            />
             <InputMask
               label="CEP"
               keyboardType="numeric"
               autoCorrect={false}
               autoCapitalize="none"
-              name="birthday"
-              type="datetime"
+              name="zip"
+              type="custom"
               options={{
                 format: '000000-000',
+                mask: '99999-999',
               }}
               placeholder="00000-000"
               returnKeyType="next"
@@ -181,7 +194,7 @@ const SignUp: React.FC = () => {
               label="Logradouro"
               ref={emailInputRef}
               autoCapitalize="none"
-              name="logradouro"
+              name="street"
               placeholder="Logradouro"
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -194,8 +207,8 @@ const SignUp: React.FC = () => {
               keyboardType="numeric"
               autoCorrect={false}
               autoCapitalize="none"
-              name="email"
-              placeholder="E-mail"
+              name="number"
+              placeholder="Número"
               returnKeyType="next"
               onSubmitEditing={() => {
                 passwordInputRef.current?.focus();
@@ -204,7 +217,7 @@ const SignUp: React.FC = () => {
             <Input
               label="Complemento"
               ref={emailInputRef}
-              name="complemento"
+              name="complement"
               placeholder="Complemento"
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -214,7 +227,7 @@ const SignUp: React.FC = () => {
             <Input
               label="Bairro"
               ref={emailInputRef}
-              name="bairro"
+              name="neighbornhood"
               placeholder="Bairro"
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -224,7 +237,7 @@ const SignUp: React.FC = () => {
             <Input
               label="Cidade"
               ref={emailInputRef}
-              name="cidade"
+              name="city"
               placeholder="Cidade"
               returnKeyType="next"
               onSubmitEditing={() => {
@@ -234,22 +247,12 @@ const SignUp: React.FC = () => {
             <Input
               label="UF"
               ref={emailInputRef}
-              name="uf"
+              name="state"
               placeholder="Uf"
               returnKeyType="next"
               onSubmitEditing={() => {
                 passwordInputRef.current?.focus();
               }}
-            />
-            <Input
-              ref={passwordInputRef}
-              label="Senha"
-              secureTextEntry
-              name="password"
-              placeholder="Senha"
-              textContentType="newPassword"
-              returnKeyType="send"
-              onSubmitEditing={() => formRef.current?.submitForm()}
             />
 
             <Button

@@ -90,44 +90,36 @@ export const AppointmentVaccines: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDependents, setSelectedDependents] = useState([]);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [finalDate, setFinalDate] = useState<Date>('');
   const [ouser1, setOuser1] = useState('');
   const [ouser2, setOuser2] = useState('');
   const [ouser3, setOuser3] = useState('');
   const [ouser4, setOuser4] = useState('');
   const [ouser5, setOuser5] = useState('');
-  const minimumDate = useMemo(() => {
-    const today = new Date();
+  // const minimumDate = useMemo(() => {
+  //   const today = new Date();
 
-    if (today.getHours() >= 17) {
-      return new Date(today.setDate(today.getDate() + 1));
-    }
+  //   if (today.getHours() >= 17) {
+  //     return new Date(today.setDate(today.getDate() + 1));
+  //   }
 
-    return today;
-  }, []);
-  const [selectedDate, setSelectedDate] = useState(minimumDate);
+  //   return today;
+  // }, []);
+  const [selectedDate, setSelectedDate] = useState<Date>();
 
   const handleConfirm = (date: Date) => {
-    console.log('teste', date);
     setSelectedDate(date);
-    console.log('slD', selectedDate);
     hideDatePicker();
   };
 
   const handleTime = (item) => {
     setSelectedAppointmentTime(item.value);
-    console.log('htv', item.value);
   };
 
   const handleDependents = (item) => {
-    console.log('dss', item);
     setSelectedDependents(item);
   };
 
   useEffect(() => {
-    setSelectedDate(selectedDate);
-    setSelectedAppointmentTime(selectedAppointmentTime);
-    setSelectedDependents(selectedDependents);
     api
       .get(`/app/vaccines/available/${selectedVaccine.id}`, {
         params: {
@@ -168,6 +160,19 @@ export const AppointmentVaccines: React.FC = () => {
         setDisabled(false);
       });
 
+  }, [selectedDate]);
+
+  useEffect(() => {
+      
+    setOuser1(selectedDependents[0]);
+    setOuser2(selectedDependents[1]);
+    setOuser3(selectedDependents[2]);
+    setOuser4(selectedDependents[3]);
+    setOuser5(selectedDependents[4]);
+
+  }, [selectedAppointmentTime, selectedDependents]);
+  
+  const finalDate = useMemo(() => {
     const [hour, minute] = selectedAppointmentTime.split(':');
     const value = setSeconds(
       setMinutes(setHours(selectedDate, Number(hour)), Number(minute)),
@@ -176,50 +181,46 @@ export const AppointmentVaccines: React.FC = () => {
     const formatedDate = new Date(
       value.valueOf() - value.getTimezoneOffset() * 60000,
     );
-    setFinalDate(formatedDate);
-    console.log('fnDt', finalDate);
+    
+    return formatedDate;
+  }, [selectedDate, selectedAppointmentTime])
 
-    setOuser1(selectedDependents[0]);
-    setOuser2(selectedDependents[1]);
-    setOuser3(selectedDependents[2]);
-    setOuser4(selectedDependents[3]);
-    setOuser5(selectedDependents[4]);
-  }, [selectedDate, selectedAppointmentTime, navigation, selectedDependents]);
 
   const handleChangeQuantity = (quantity) => {
     if (quantity > 1 && dependents.length) {
       setShowAlert(true);
-      setErrorTitle('Erro!');
-      setErrorMessage('Você Precisa adicionar os Dependentes');
+      setErrorTitle('Atenção!');
+      setErrorMessage('Você precisa adicionar seus dependentes');
       setIsBack(false);
     }
     setQuantity(quantity);
   };
 
-  const handleSave = useCallback(() => {
-    console.log('dep', selectedDependents);
-    // for (let i; i <= 4; i++) {
-    //   const ouser = selectedDependents[i];
-    //   console.log('ou', ouser);
-    // }
-    const data = {
-      vaccine_id: selectedVaccine.id,
-      lab_id: labId,
-      quantity: quantity,
-      date: finalDate,
-      delivery: false,
-      unity: {
-        name: selectedLocale,
-        adress: address,
-      },
-      ouser1_id: ouser1,
-      ouser2_id: ouser2,
-      ouser3_id: ouser3,
-      ouser4_id: ouser4,
-      ouser5_id: ouser5,
-    };
-    console.log('data', data);
-    const response = api
+  const handleSave = (() => {
+    if( selectedDependents.length !== (Number(quantity)-1) ) {
+      setShowAlert(true);
+      setErrorTitle('Erro!');
+      setErrorMessage('O número de dependentes é diferente que a quantidade selecionada');
+      setIsBack(false); 
+    } else {
+      const data = {
+        vaccine_id: selectedVaccine.id,
+        lab_id: labId,
+        quantity: quantity,
+        date: finalDate,
+        delivery: false,
+        unity: {
+          name: selectedLocale,
+          adress: address,
+        },
+        ouser1_id: ouser1,
+        ouser2_id: ouser2,
+        ouser3_id: ouser3,
+        ouser4_id: ouser4,
+        ouser5_id: ouser5,
+      };
+      console.log('data', data);
+      const response = api
       .post('app/vaccines/appointments', data)
       .then(() => {
         setShowAlert(true);
@@ -234,9 +235,10 @@ export const AppointmentVaccines: React.FC = () => {
         setIsBack(true);
       });
 
-    return response;
-  }, []);
-
+      return response;
+    };
+  });
+    
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -363,6 +365,7 @@ export const AppointmentVaccines: React.FC = () => {
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
+        minimumDate={new Date()}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />

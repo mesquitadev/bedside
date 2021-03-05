@@ -112,6 +112,28 @@ export const Settings: React.FC = () => {
             </PrimaryText>
           </Card>
           <Card
+            onPress={() => navigation.navigate('Profile')}
+            style={{
+              elevation: 10,
+              shadowColor: '#000',
+              shadowOffset: {width: 0, height: 3},
+              shadowOpacity: 0.4,
+              shadowRadius: 5,
+            }}>
+            <IconButton name="plus" size={20}>
+              <Icon name="user" size={20} color="#ffff" />
+            </IconButton>
+            <PrimaryText
+              textColor="black"
+              alignSelf="center"
+              fontSize={14}
+              style={{
+                marginTop: 10,
+              }}>
+              Perfil
+            </PrimaryText>
+          </Card>
+          <Card
             onPress={() => signOut()}
             style={{
               elevation: 10,

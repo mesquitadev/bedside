@@ -1,6 +1,8 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {SecondaryText, PrimaryText} from '../../styles';
+import {View} from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 import {
   MainContainer,
   ListContainer,
@@ -13,9 +15,10 @@ import {
   Avatar,
   Item,
   InfoContainer,
+  FooterModal,
 } from './publicTab.styles';
 import {Modalize} from 'react-native-modalize';
-import {Loading} from '../../components/';
+import {Loading, Button} from '../../components/';
 import avatar from '../../assets/avatar.png';
 import {Portal} from 'react-native-portalize';
 import moment from 'moment';
@@ -122,15 +125,30 @@ const PublicTab: React.FC = () => {
                 adjustToContentHeight>
                 <ContainerModal>
                   <ModalHeader>
-                    <SecondaryText
+                    {/* <SecondaryText
                       style={{width: 150}}
                       textColor="#E8237D"
                       fontSize={20}
                       ellipsizeMode="tail"
                       numberOfLines={1}>
                       ID: #{selectedAppointment.id}
-                    </SecondaryText>
+                    </SecondaryText> */}
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginTop: 40,
+                      }}>
+                      <SecondaryText
+                        textColor="black"
+                        fontSize={30}
+                        style={{margin: 20}}>
+                        SGHINI
+                      </SecondaryText>
+                      <QRCode value="SGHINI" />
+                    </View>
                   </ModalHeader>
+
                   <HeaderContainer>
                     <SecondaryText
                       textColor="#40CCB2"
@@ -271,6 +289,57 @@ const PublicTab: React.FC = () => {
                       </Item>
                     </InfoContainer>
                   </DataContainer>
+                  {selectedAppointment.ouser1 ? (
+                    <>
+                      <HeaderContainer>
+                        <SecondaryText
+                          textColor="#40CCB2"
+                          alignSelf="flex-start"
+                          fontSize={20}>
+                          Dependentes:
+                        </SecondaryText>
+                      </HeaderContainer>
+                      <DataContainer>
+                        <InfoContainer style={{flexDirection: 'column'}}>
+                          {selectedAppointment.ouser1 ? (
+                            <PrimaryText
+                              textColor="black"
+                              alignSelf="flex-start">
+                              {selectedAppointment.ouser1.name}
+                            </PrimaryText>
+                          ) : null}
+                          {selectedAppointment.ouser2 ? (
+                            <PrimaryText
+                              textColor="black"
+                              alignSelf="flex-start">
+                              {selectedAppointment.ouser2.name}
+                            </PrimaryText>
+                          ) : null}
+                          {selectedAppointment.ouser3 ? (
+                            <PrimaryText
+                              textColor="black"
+                              alignSelf="flex-start">
+                              {selectedAppointment.ouser3.name}
+                            </PrimaryText>
+                          ) : null}
+                          {selectedAppointment.ouser4 ? (
+                            <PrimaryText
+                              textColor="black"
+                              alignSelf="flex-start">
+                              {selectedAppointment.ouser4.name}
+                            </PrimaryText>
+                          ) : null}
+                          {selectedAppointment.ouser5 ? (
+                            <PrimaryText
+                              textColor="black"
+                              alignSelf="flex-start">
+                              {selectedAppointment.ouser5.name}
+                            </PrimaryText>
+                          ) : null}
+                        </InfoContainer>
+                      </DataContainer>
+                    </>
+                  ) : null}
                 </ContainerModal>
               </Modalize>
             </Portal>

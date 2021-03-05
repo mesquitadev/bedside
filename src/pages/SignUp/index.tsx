@@ -163,7 +163,84 @@ const SignUp: React.FC = () => {
                 passwordInputRef.current?.focus();
               }}
             />
-
+            <InputMask
+              label="CEP"
+              keyboardType="numeric"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="birthday"
+              type="datetime"
+              options={{
+                format: '000000-000',
+              }}
+              placeholder="00000-000"
+              returnKeyType="next"
+              onSubmitEditing={() => emailInputRef.current?.focus()}
+            />
+            <Input
+              label="Logradouro"
+              ref={emailInputRef}
+              autoCapitalize="none"
+              name="logradouro"
+              placeholder="Logradouro"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+            <Input
+              label="Numero"
+              ref={emailInputRef}
+              keyboardType="numeric"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="email"
+              placeholder="E-mail"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+            <Input
+              label="Complemento"
+              ref={emailInputRef}
+              name="complemento"
+              placeholder="Complemento"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+            <Input
+              label="Bairro"
+              ref={emailInputRef}
+              name="bairro"
+              placeholder="Bairro"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+            <Input
+              label="Cidade"
+              ref={emailInputRef}
+              name="cidade"
+              placeholder="Cidade"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
+            <Input
+              label="UF"
+              ref={emailInputRef}
+              name="uf"
+              placeholder="Uf"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInputRef.current?.focus();
+              }}
+            />
             <Input
               ref={passwordInputRef}
               label="Senha"

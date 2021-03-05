@@ -3,6 +3,7 @@ import {Dimensions} from 'react-native';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {Header, Loading} from '../../components';
 import api from '../../services/api';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import PublicTab from './publicTab';
 import PrivateTab from './privateTab';
@@ -22,13 +23,21 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [cityHall, setCityHall] = useState<Home[]>([]);
   useEffect(() => {
-    api
-      .get('app/home')
-      .then((response) => {
-        setCityHall(response.data);
-        setLoading(false);
-      })
-      .catch((err) => console.log('erro', err.message));
+    async function loadLabs(): Promise<void> {
+      api
+        .get('app/home', {
+          // headers: {
+          //   Authorization: 'Bearer ' + AsyncStorage.getItem('@Bedside:token'),
+          // },
+        })
+        .then((response) => {
+          setCityHall(response.data);
+          setLoading(false);
+        })
+        .catch((err) => console.log('erro', err.message));
+    }
+
+    loadLabs();
   }, []);
 
   const [routes] = useState([

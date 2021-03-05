@@ -15,11 +15,6 @@ interface User {
   avatar_url: string;
 }
 
-interface AuthState {
-  token: string;
-  user: User;
-}
-
 interface SignInCredentials {
   email: string;
   password: string;
@@ -30,6 +25,11 @@ interface AuthContextData {
   loading: boolean;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  updateUser(user: User): Promise<void>;
+}
+interface AuthState {
+  token: string;
+  user: User;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -73,7 +73,6 @@ const AuthProvider: React.FC = ({children}) => {
     api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
     setData({token, user});
-    return response.data;
   }, []);
 
   const signOut = useCallback(async () => {
@@ -82,8 +81,21 @@ const AuthProvider: React.FC = ({children}) => {
     setData({} as AuthState);
   }, []);
 
+  const updateUser = useCallback(
+    async (user: User) => {
+      await AsyncStorage.setItem('@Bedside:user', JSON.stringify(user));
+
+      setData({
+        token: data.token,
+        user,
+      });
+    },
+    [setData, data.token],
+  );
+
   return (
-    <AuthContext.Provider value={{user: data.user, loading, signIn, signOut}}>
+    <AuthContext.Provider
+      value={{user: data.user, loading, signIn, signOut, updateUser}}>
       {children}
     </AuthContext.Provider>
   );

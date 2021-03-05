@@ -92,3 +92,7 @@ export const Avatar = styled.Image`
   border-top-width: 2px;
   border-bottom-color: #efefef;
   border-bottom-width: 2px; */
+
+export const FooterModal = styled.View`
+  margin: 0 20px;
+`;

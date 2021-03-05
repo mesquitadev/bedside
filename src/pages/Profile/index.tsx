@@ -27,37 +27,25 @@ export const Header = styled.View`
   justify-content: space-between;
 `;
 
-export const List = styled(FlatList)``;
-
-export const ListItem = styled.TouchableOpacity`
-  justify-content: center;
-  height: 50px;
+export const DataContainer = styled.View`
   flex: 1;
-  border-bottom-color: #e5e5e5;
-  border-bottom-width: 2px;
-  padding: 0px 10px;
-`;
-
-export const IconButton = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-  background: #e8237d;
-  border-radius: 50px;
+  padding: 0 30px;
 `;
 
 export const Profile: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const route = useRoute();
   const [user, setUser] = useState([]);
 
   useEffect(() => {
-    api.get('users').then((res) => {
-      setUser(res.data.user);
-      console.log('res', res.data.user);
-    }).catch((err) => {
-        console.warn('erro', err.message)
-    });
+    api
+      .get('users')
+      .then((res) => {
+        setUser(res.data.user);
+      })
+      .catch((err) => {
+        console.warn('erro', err.message);
+      });
   }, [navigation]);
 
   return loading ? (
@@ -70,16 +58,21 @@ export const Profile: React.FC = () => {
             Perfil
           </PrimaryText>
         </Header>
-        <PrimaryText textColor="black" alignSelf="flex-start">
-            {user.name},
-            {user.email},
-            {user.zip},
-            {user.street},
-            {user.number},
-            {user.complement},
-            {user.neighborhood},
-            {user.city}
-        </PrimaryText>
+        <DataContainer>
+          <SecondaryText textColor="black" alignSelf="flex-start" fontSize={20}>
+            {user.name}
+          </SecondaryText>
+          <PrimaryText textColor="black" alignSelf="flex-start">
+            {user.email}
+          </PrimaryText>
+          <PrimaryText textColor="black" alignSelf="flex-start">
+            {user.street}, {user.number}, {user.complement} -{' '}
+            {user.neighborhood}
+          </PrimaryText>
+          <PrimaryText textColor="black" alignSelf="flex-start">
+            {user.zip} - {user.city}
+          </PrimaryText>
+        </DataContainer>
       </Container>
     </SafeAreaView>
   );

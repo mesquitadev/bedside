@@ -95,7 +95,7 @@ export const Settings: React.FC = () => {
               elevation: 10,
               shadowColor: '#000',
               shadowOffset: {width: 0, height: 3},
-              shadowOpacity: 0.4,
+              shadowOpacity: 0.2,
               shadowRadius: 5,
             }}>
             <IconButton name="plus" size={20}>
@@ -117,7 +117,7 @@ export const Settings: React.FC = () => {
               elevation: 10,
               shadowColor: '#000',
               shadowOffset: {width: 0, height: 3},
-              shadowOpacity: 0.4,
+              shadowOpacity: 0.2,
               shadowRadius: 5,
             }}>
             <IconButton name="plus" size={20}>

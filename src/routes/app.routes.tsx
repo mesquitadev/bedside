@@ -13,6 +13,7 @@ import {AppointmentVaccines} from '../pages/Vaccines/AppointmentDetails';
 import Dependents from '../pages/Dependents';
 import AddDependents from '../pages/Dependents/AddDependent';
 import Settings from '../pages/Settings';
+import Profile from '../pages/Profile';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -207,6 +208,28 @@ const SettingsRoutes: React.FC = () => (
         ),
       }}
     />
+    <Stack.Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        headerShown: false,
+        headerTitle: () => <Logo source={bedLogo} />,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: 'white',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+          height: 90,
+        },
+        headerLeftContainerStyle: {
+          marginLeft: 15,
+        },
+        headerBackImage: () => (
+          <Icon name="chevron-left" size={24} color={'#000'} />
+        ),
+      }}
+    />
   </Stack.Navigator>
 );
 
@@ -241,7 +264,7 @@ const AppRoutes: React.FC = () => (
       showLabel: false,
     }}>
     <BottomTab.Screen name="Home" component={HomeRoutes} />
-    <BottomTab.Screen name="Search" component={SuccessAfterSignUp} />
+    {/* <BottomTab.Screen name="Search" component={SuccessAfterSignUp} /> */}
     <BottomTab.Screen name="Appointments" component={AppointmentRoutes} />
     <BottomTab.Screen name="Settings" component={SettingsRoutes} />
   </BottomTab.Navigator>

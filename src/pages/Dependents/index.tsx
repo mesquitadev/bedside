@@ -1,5 +1,11 @@
 import React, {useRef, useState, useEffect, useCallback} from 'react';
-import {View, Platform, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Platform,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView,
+} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {PrimaryText, SecondaryText} from '../../styles';
 import {Option, Button, Input, Alert, Loading} from '../../components/';
@@ -54,7 +60,7 @@ export const Dependents: React.FC = () => {
   return loading ? (
     <Loading />
   ) : (
-    <>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Container>
         <Header>
           <PrimaryText textColor="#40CCB2" alignSelf="flex-start" fontSize={30}>
@@ -77,7 +83,7 @@ export const Dependents: React.FC = () => {
           )}
         />
       </Container>
-    </>
+    </SafeAreaView>
   );
 };
 

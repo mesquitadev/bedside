@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {AppointmentVaccines} from '../pages/Vaccines/AppointmentDetails';
 import Dependents from '../pages/Dependents';
 import AddDependents from '../pages/Dependents/AddDependent';
+import Settings from '../pages/Settings';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -117,6 +118,78 @@ const AppointmentRoutes: React.FC = () => (
       name="Appointments"
       component={Appointments}
       options={{
+        headerShown: false,
+        headerTitle: () => <Logo source={bedLogo} />,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: 'white',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+          height: 90,
+        },
+        headerLeftContainerStyle: {
+          marginLeft: 15,
+        },
+        headerBackImage: () => (
+          <Icon name="chevron-left" size={24} color={'#000'} />
+        ),
+      }}
+    />
+  </Stack.Navigator>
+);
+
+const SettingsRoutes: React.FC = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="HomeConfig"
+      component={Settings}
+      options={{
+        headerShown: false,
+        headerTitle: () => <Logo source={bedLogo} />,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: 'white',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+          height: 90,
+        },
+        headerLeftContainerStyle: {
+          marginLeft: 15,
+        },
+        headerBackImage: () => (
+          <Icon name="chevron-left" size={24} color={'#000'} />
+        ),
+      }}
+    />
+    <Stack.Screen
+      name="Dependents"
+      component={Dependents}
+      options={{
+        headerShown: false,
+        headerTitle: () => <Logo source={bedLogo} />,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: 'white',
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 0,
+          height: 90,
+        },
+        headerLeftContainerStyle: {
+          marginLeft: 15,
+        },
+        headerBackImage: () => (
+          <Icon name="chevron-left" size={24} color={'#000'} />
+        ),
+      }}
+    />
+
+    <Stack.Screen
+      name="AddDependent"
+      component={AddDependents}
+      options={{
         headerTitle: () => <Logo source={bedLogo} />,
         headerBackTitleVisible: false,
         headerStyle: {
@@ -170,7 +243,7 @@ const AppRoutes: React.FC = () => (
     <BottomTab.Screen name="Home" component={HomeRoutes} />
     <BottomTab.Screen name="Search" component={SuccessAfterSignUp} />
     <BottomTab.Screen name="Appointments" component={AppointmentRoutes} />
-    <BottomTab.Screen name="Settings" component={SuccessAfterSignUp} />
+    <BottomTab.Screen name="Settings" component={SettingsRoutes} />
   </BottomTab.Navigator>
 );
 export default AppRoutes;

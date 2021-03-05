@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, SafeAreaView} from 'react-native';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {Header} from './publicTab.styles';
 import api from '../../services/api';
@@ -52,9 +52,9 @@ const Appointments = () => {
     />
   );
   return (
-    <>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <Header>
-        <PrimaryText textColor="#04C7AD" fontSize={32}>
+        <PrimaryText textColor="#04C7AD" fontSize={32} alignSelf="flex-start">
           Agendamentos
         </PrimaryText>
       </Header>
@@ -68,7 +68,7 @@ const Appointments = () => {
         onIndexChange={setIndex}
         initialLayout={initialLayout}
       />
-    </>
+    </SafeAreaView>
   );
 };
 

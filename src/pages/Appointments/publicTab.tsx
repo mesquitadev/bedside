@@ -143,9 +143,9 @@ const PublicTab: React.FC = () => {
                         textColor="black"
                         fontSize={30}
                         style={{margin: 20}}>
-                        SGHINI
+                        {selectedAppointment.token}
                       </SecondaryText>
-                      <QRCode value="SGHINI" />
+                      <QRCode value={selectedAppointment.token} />
                     </View>
                   </ModalHeader>
 

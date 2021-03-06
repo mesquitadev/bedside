@@ -30,6 +30,14 @@ const SignUp: React.FC = () => {
   const birthdayInputRef = useRef<TextInput>(null);
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
+  const rgInputRef = useRef<TextInput>(null);
+  const streetInputRef = useRef<TextInput>(null);
+
+  const numberInputRef = useRef<TextInput>(null);
+  const complementInputRef = useRef<TextInput>(null);
+  const neighbornHoodInputRef = useRef<TextInput>(null);
+  const cityinputRef = useRef<TextInput>(null);
+  const stateInputRef = useRef<TextInput>(null);
 
   interface FormData {
     name: string;
@@ -37,6 +45,17 @@ const SignUp: React.FC = () => {
     birthday: string;
     email: string;
     password: string;
+    rg: string;
+    street: number;
+    number: number;
+    zip: string;
+    complement: string;
+    neighborhood: string;
+    phone: string;
+    city: string;
+    state: string;
+    type: string;
+    permission: boolean;
   }
 
   const handleSave = useCallback(async (data: FormData) => {
@@ -60,14 +79,28 @@ const SignUp: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
+      console.log('cep', data.zip.replace('-', ''));
+      const newData = {
+        name: data.name,
+        cpf: data.cpf.replace(/[^0-9]/g, ''),
+        birthday: moment(data.birthday, true).format('YYYY-MM-DD'),
+        email: data.email,
+        password: data.password,
+        rg: data.rg,
+        zip: data.zip.replace('-', ''),
+        number: data.number,
+        complement: data.complement,
+        street: data.street,
+        neighborhood: data.neighborhood,
+        phone: data.phone,
+        city: data.city,
+        state: data.state,
+        type: '1',
+        permission: 'true',
+      };
+      console.log('data', newData);
       const response = await api
-        .post('users', {
-          name: data.name,
-          cpf: data.cpf.replace(/[^0-9]/g, ''),
-          birthday: moment(data.birthday, true).format('YYYY-MM-DD'),
-          email: data.email,
-          password: data.password,
-        })
+        .post('users', newData)
         .then(() => {
           setShowAlert(true);
           setErrorTitle('Sucesso!');
@@ -78,7 +111,7 @@ const SignUp: React.FC = () => {
           setShowAlert(true);
           setErrorTitle('Erro!');
           setErrorMessage(error.response.data.error);
-          setIsBack(true);
+          setIsBack(false);
         });
 
       return response;
@@ -136,6 +169,17 @@ const SignUp: React.FC = () => {
               onSubmitEditing={() => birthdayInputRef.current?.focus()}
             />
 
+            <Input
+              label="RG"
+              ref={rgInputRef}
+              keyboardType="numeric"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="rg"
+              placeholder="RG"
+              returnKeyType="next"
+            />
+
             <InputMask
               label="Data de Nascimento"
               keyboardType="numeric"
@@ -173,37 +217,51 @@ const SignUp: React.FC = () => {
               placeholder="Senha"
               textContentType="newPassword"
               returnKeyType="send"
-              onSubmitEditing={() => formRef.current?.submitForm()}
+              onSubmitEditing={() => streetInputRef.current?.focus()}
             />
+            <InputMask
+              label="Telefone"
+              keyboardType="numeric"
+              autoCorrect={false}
+              autoCapitalize="none"
+              name="phone"
+              type="cel-phone"
+              options={{
+                format: '(00) 00000-0000',
+              }}
+              placeholder="(00) 00000-0000"
+              returnKeyType="next"
+              onSubmitEditing={() => emailInputRef.current?.focus()}
+            />
+
             <InputMask
               label="CEP"
               keyboardType="numeric"
               autoCorrect={false}
               autoCapitalize="none"
               name="zip"
-              type="custom"
+              type="zip-code"
               options={{
-                format: '000000-000',
                 mask: '99999-999',
               }}
               placeholder="00000-000"
               returnKeyType="next"
-              onSubmitEditing={() => emailInputRef.current?.focus()}
+              onSubmitEditing={() => streetInputRef.current?.focus()}
             />
             <Input
               label="Logradouro"
-              ref={emailInputRef}
+              ref={streetInputRef}
               autoCapitalize="none"
               name="street"
               placeholder="Logradouro"
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                numberInputRef.current?.focus();
               }}
             />
             <Input
               label="Numero"
-              ref={emailInputRef}
+              ref={numberInputRef}
               keyboardType="numeric"
               autoCorrect={false}
               autoCapitalize="none"
@@ -211,47 +269,47 @@ const SignUp: React.FC = () => {
               placeholder="Número"
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                complementInputRef.current?.focus();
               }}
             />
             <Input
               label="Complemento"
-              ref={emailInputRef}
+              ref={complementInputRef}
               name="complement"
               placeholder="Complemento"
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                neighbornHoodInputRef.current?.focus();
               }}
             />
             <Input
               label="Bairro"
-              ref={emailInputRef}
-              name="neighbornhood"
+              ref={neighbornHoodInputRef}
+              name="neighborhood"
               placeholder="Bairro"
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                cityinputRef.current?.focus();
               }}
             />
             <Input
               label="Cidade"
-              ref={emailInputRef}
+              ref={cityinputRef}
               name="city"
               placeholder="Cidade"
               returnKeyType="next"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                stateInputRef.current?.focus();
               }}
             />
             <Input
               label="UF"
-              ref={emailInputRef}
+              ref={stateInputRef}
               name="state"
               placeholder="Uf"
-              returnKeyType="next"
+              returnKeyType="send"
               onSubmitEditing={() => {
-                passwordInputRef.current?.focus();
+                formRef.current?.submitForm();
               }}
             />
 

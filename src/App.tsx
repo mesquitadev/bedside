@@ -12,7 +12,6 @@ import AppProvider from './hooks';
 const App: React.FC = () => {
   return (
     <>
-      <NetworkIndicator />
       <NavigationContainer>
         <StatusBar barStyle="dark-content" backgroundColor="white" />
         <AppProvider>

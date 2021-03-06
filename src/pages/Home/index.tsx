@@ -25,16 +25,12 @@ const Home = () => {
   useEffect(() => {
     async function loadLabs(): Promise<void> {
       api
-        .get('app/home', {
-          // headers: {
-          //   Authorization: 'Bearer ' + AsyncStorage.getItem('@Bedside:token'),
-          // },
-        })
+        .get('app/home')
         .then((response) => {
           setCityHall(response.data);
           setLoading(false);
         })
-        .catch((err) => console.log('erro', err.message));
+        .catch((err) => console.log('erro', err.response.data.error));
     }
 
     loadLabs();

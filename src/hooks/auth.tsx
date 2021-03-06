@@ -12,7 +12,6 @@ interface User {
   id: string;
   email: string;
   name: string;
-  avatar_url: string;
 }
 
 interface SignInCredentials {
@@ -27,6 +26,7 @@ interface AuthContextData {
   signOut(): void;
   updateUser(user: User): Promise<void>;
 }
+
 interface AuthState {
   token: string;
   user: User;
@@ -70,7 +70,7 @@ const AuthProvider: React.FC = ({children}) => {
       ['@Bedside:user', JSON.stringify(user)],
     ]);
 
-    api.defaults.headers.authorization = `Bearer ${token[1]}`;
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
     setData({token, user});
   }, []);

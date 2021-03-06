@@ -33,7 +33,7 @@ const PublicTab: React.FC = ({labs}: object) => {
       <InfoContainer>
         <View>
           <SecondaryText fontSize={20} alignSelf="flex-start" textColor="black">
-            {/* {labs.publicLabs[0].name} */}
+            {labs.publicLabs[0].name}
           </SecondaryText>
           <PrimaryText fontSize={11} alignSelf="flex-start" textColor="black">
             Vacinas

@@ -22,18 +22,15 @@ const Home = () => {
   const [index, setIndex] = useState(1);
   const [loading, setLoading] = useState(true);
   const [cityHall, setCityHall] = useState<Home[]>([]);
-  useEffect(() => {
-    async function loadLabs(): Promise<void> {
-      api
-        .get('app/home')
-        .then((response) => {
-          setCityHall(response.data);
-          setLoading(false);
-        })
-        .catch((err) => console.log('erro', err.response.data.error));
-    }
 
-    loadLabs();
+  useEffect(() => {
+    api
+      .get('app/home')
+      .then((response) => {
+        setCityHall(response.data);
+        setLoading(false);
+      })
+      .catch((err) => console.log('erro', err.response.data.error));
   }, []);
 
   const [routes] = useState([

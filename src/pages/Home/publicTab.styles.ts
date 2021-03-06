@@ -7,6 +7,8 @@ export const MainContainer = styled.View`
 `;
 export const Capa = styled.Image`
   margin-top: 19px;
+  width: 100%;
+  height: 184px;
   align-self: center;
   max-height: 184px;
 `;

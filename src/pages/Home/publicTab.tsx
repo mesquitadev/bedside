@@ -29,7 +29,13 @@ const PublicTab: React.FC = ({labs}: object) => {
 
   return (
     <MainContainer>
-      <Capa source={LogoPref} />
+      <Capa
+        source={{
+          uri: labs.publicLabs[0].banner.url
+            ? labs.publicLabs[0].banner.url
+            : LogoPref,
+        }}
+      />
       <InfoContainer>
         <View>
           <SecondaryText fontSize={20} alignSelf="flex-start" textColor="black">
@@ -39,7 +45,13 @@ const PublicTab: React.FC = ({labs}: object) => {
             Vacinas
           </PrimaryText>
         </View>
-        <Avatar source={avatar} />
+        <Avatar
+          source={{
+            uri: labs.publicLabs[0].logo.url
+              ? labs.publicLabs[0].logo.url
+              : avatar,
+          }}
+        />
       </InfoContainer>
       <SecondaryText fontSize={15} alignSelf="flex-start" textColor="#40CCB2">
         SERVIÇOS

@@ -21,7 +21,7 @@ const Header = ({onPress, address}: HeaderProps) => {
             onPress={onPress}>
             {address ? address : 'Adicionar Endereço'}
           </SecondaryText>
-          <Icon name="chevron-down" size={16} />
+          {/* <Icon name="chevron-down" size={16} /> */}
         </AddressContainer>
         <Logo source={BedLogo} />
       </Container>

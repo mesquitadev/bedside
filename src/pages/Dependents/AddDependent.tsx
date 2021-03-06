@@ -28,7 +28,8 @@ export const FormContainer = styled.View`
 
 export const Header = styled.View`
   height: 80px;
-  padding: 20px 20px;
+  width: 100%;
+  padding: 0px 10px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -107,7 +108,7 @@ const AddDependents: React.FC = () => {
   return (
     <Container>
       <KeyboardAvoidingView
-        style={{flex: 1, marginHorizontal: 20}}
+        style={{flex: 1, marginHorizontal: 10}}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         enabled>
         <ScrollView
@@ -115,10 +116,7 @@ const AddDependents: React.FC = () => {
           contentContainerStyle={{flex: 1}}>
           <Container>
             <Header>
-              <PrimaryText
-                textColor="#40CCB2"
-                alignSelf="flex-start"
-                fontSize={30}>
+              <PrimaryText textColor="#40CCB2" alignSelf="center" fontSize={30}>
                 Adicionar Dependente
               </PrimaryText>
             </Header>

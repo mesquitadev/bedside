@@ -4,7 +4,7 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {Header, Loading} from '../../components';
 import api from '../../services/api';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import {useAuth} from '../../hooks/auth';
 import PublicTab from './publicTab';
 import PrivateTab from './privateTab';
 
@@ -22,6 +22,7 @@ const Home = () => {
   const [index, setIndex] = useState(1);
   const [loading, setLoading] = useState(true);
   const [cityHall, setCityHall] = useState<Home[]>([]);
+  const {user} = useAuth();
 
   useEffect(() => {
     api
@@ -75,7 +76,7 @@ const Home = () => {
     <Loading visible={loading} />
   ) : (
     <>
-      <Header address={'Av. 02, Setor Bueno'} />
+      <Header address={`${user.street}, ${user.neighborhood} - ${user.city}`} />
       <TabView
         style={{
           backgroundColor: 'white',

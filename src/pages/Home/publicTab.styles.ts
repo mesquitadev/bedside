@@ -1,11 +1,14 @@
 import styled from 'styled-components/native';
 
-export const MainContainer = styled.View`
+export const MainContainer = styled.ScrollView`
   flex: 1;
-  margin: 0 29px;
+  padding: 0 29px;
   background: white;
 `;
-export const Capa = styled.Image`
+export const Capa = styled.Image.attrs({
+  resizeMode: 'contain',
+})`
+  padding: 10px;
   margin-top: 19px;
   width: 100%;
   height: 184px;

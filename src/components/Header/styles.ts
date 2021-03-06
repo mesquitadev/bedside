@@ -17,5 +17,5 @@ export const Logo = styled.Image.attrs({
 export const AddressContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  max-width: 150px;
+  max-width: 120px;
 `;
